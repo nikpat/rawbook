@@ -245,24 +245,24 @@ class Account_model extends CI_Model {
         
     }
 
-    function do_upload($_FILES)
+    function do_upload($FILE)
     {
         $allowedExts = array("gif", "jpeg", "jpg", "png");
-        $temp = explode(".", $_FILES["file"]["name"]);
+        $temp = explode(".", $FILE["file"]["name"]);
         $extension = end($temp);
         $filename = uniqid().'.'.$extension ;
 
 
-        if ((($_FILES["file"]["type"] == "image/gif")
-        || ($_FILES["file"]["type"] == "image/jpeg")
-        || ($_FILES["file"]["type"] == "image/jpg")
-        || ($_FILES["file"]["type"] == "image/pjpeg")
-        || ($_FILES["file"]["type"] == "image/x-png")
-        || ($_FILES["file"]["type"] == "image/png"))
-        && ($_FILES["file"]["size"] < 2000000)
+        if ((($FILE["file"]["type"] == "image/gif")
+        || ($FILE["file"]["type"] == "image/jpeg")
+        || ($FILE["file"]["type"] == "image/jpg")
+        || ($FILE["file"]["type"] == "image/pjpeg")
+        || ($FILE["file"]["type"] == "image/x-png")
+        || ($FILE["file"]["type"] == "image/png"))
+        && ($FILE["file"]["size"] < 2000000)
         && in_array($extension, $allowedExts))
           {
-          if ($_FILES["file"]["error"] > 0)
+          if ($FILE["file"]["error"] > 0)
             {
                 //return "Return Code: " . $_FILES["file"]["error"] . "<br>";
                 return FALSE;
@@ -272,11 +272,11 @@ class Account_model extends CI_Model {
 
             if (file_exists("./pics/".$filename ))
               {
-              return  $_FILES["file"]["name"] . " already exists. ";
+              return  $FILE["file"]["name"] . " already exists. ";
               }
             else
               {
-              move_uploaded_file($_FILES["file"]["tmp_name"],
+              move_uploaded_file($FILE["file"]["tmp_name"],
               "./pics/" . $filename);
               return $filename;
               }
