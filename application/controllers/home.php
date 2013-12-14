@@ -2,11 +2,17 @@
 require("/assets/recaptchalib.php");
 class Home extends CI_Controller {
 
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->model('account_model','account');
+	}
 
 	public function index()
 	{
 		$data['main_pg'] = "home";
 		if($this->session->userdata('isLogged') == 1){
+			$data['users'] = json_encode($this->account->get_users());
 			$this->load->view('header',$data);
 			$this->load->view('home');
 			$this->load->view('footer');

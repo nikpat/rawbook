@@ -7,6 +7,10 @@ class Account_model extends CI_Model {
         // Call the Model constructor
         parent::__construct();
     }
+
+    function get_users(){
+        return $this->db->get('user')->result_array(); 
+    }
     
     function get_user($id){
     	return $this->db->get_where('user',array('id'=>$id))->row_array();    	
@@ -187,9 +191,8 @@ class Account_model extends CI_Model {
         return $this->db->query($query)->result_array();
     }
 
-    function edit_profile($data,$image){
-        print_r($data);
-        var_dump($image);
+    function edit_profile($user_id,$data,$image){
+        
         $opts = array(
           'http'=>array(
             'method'=>"GET",
@@ -204,28 +207,42 @@ class Account_model extends CI_Model {
 
         //$homepage = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address='+$data['country']+','+$data['city']+',mumbai&sensor=false', false, $context);
         $url = 'http://maps.googleapis.com/maps/api/geocode/json?address='.$data['country'].','.$data['city'].'&sensor=false';
-        echo $url;
+        
         //$url = 'http://maps.googleapis.com/maps/api/geocode/json?address=india,bombay&sensor=false';
         $homepage = file_get_contents($url, false, $context);
         $jsonDcoded = json_decode($homepage);
         $lat = $jsonDcoded->results['0']->geometry->location->lat;
         $lng = $jsonDcoded->results['0']->geometry->location->lng;
         
+    
+
+        $filename = $this->do_upload($image);
+
+        
+        $user = $this->db->query('SELECT * FROM user WHERE id ='.$user_id)->row_array();
+        $oldpass = $user['img_url'];
+
         $data = array(
                 'firstname' => $data['firstname'],
                 'middlename' => $data['middlename'],
                 'lastname' => $data['lastname'],
                 'dob' => $data['dob'],
+                'gender' => $data['gender'],
                 'country' => $data['country'],
                 'city' => $data['city'],
                 'lat' => $lat,
-                'lng' => $lng,
+                'lng' => $lng
             );
 
-        exit;
-        $this->db->where('id', $data['id']);
+        if($filename){
+            $data['img_url'] = $filename;
+
+        }
+
+        $this->db->where('id', $user_id);
         $this->db->update('user', $data); 
-        $this->do_upload($image);
+
+        
     }
 
     function do_upload($_FILES)
@@ -233,6 +250,9 @@ class Account_model extends CI_Model {
         $allowedExts = array("gif", "jpeg", "jpg", "png");
         $temp = explode(".", $_FILES["file"]["name"]);
         $extension = end($temp);
+        $filename = uniqid().'.'.$extension ;
+
+
         if ((($_FILES["file"]["type"] == "image/gif")
         || ($_FILES["file"]["type"] == "image/jpeg")
         || ($_FILES["file"]["type"] == "image/jpg")
@@ -244,31 +264,49 @@ class Account_model extends CI_Model {
           {
           if ($_FILES["file"]["error"] > 0)
             {
-            echo "Return Code: " . $_FILES["file"]["error"] . "<br>";
+                //return "Return Code: " . $_FILES["file"]["error"] . "<br>";
+                return FALSE;
             }
           else
             {
-            echo "Upload: " . $_FILES["file"]["name"] . "<br>";
-            echo "Type: " . $_FILES["file"]["type"] . "<br>";
-            echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
-            echo "Temp file: " . $_FILES["file"]["tmp_name"] . "<br>";
 
-            if (file_exists("./pics/" . $_FILES["file"]["name"]))
+            if (file_exists("./pics/".$filename ))
               {
-              echo $_FILES["file"]["name"] . " already exists. ";
+              return  $_FILES["file"]["name"] . " already exists. ";
               }
             else
               {
               move_uploaded_file($_FILES["file"]["tmp_name"],
-              "./pics/" . $_FILES["file"]["name"]);
-              echo "Stored in: " . "upload/" . $_FILES["file"]["name"];
+              "./pics/" . $filename);
+              return $filename;
               }
             }
           }
         else
           {
-          echo "Invalid file";
+            return FALSE;
           }
+
+
+    }
+
+
+    function change_password($user_id,$data){
+
+        $user = $this->db->query('SELECT password FROM user WHERE id ='.$user_id)->row_array();
+        $oldpass = $user['password'];
+        if(md5($data['old_pass']) == $oldpass ){
+           $data = array(
+                'password' => md5($data['new_pass']),
+            );
+            $this->db->where('id', $user_id);
+            $this->db->update('user', $data); 
+            return TRUE ; 
+        }
+        else{
+            return FALSE ;
+        }
+        
     }
 }
 

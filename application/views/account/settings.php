@@ -20,7 +20,8 @@
       } 
     
   </style>
-
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQyK6vL5GbHnP4r1RcQ6xQWjt82MnXZgI&sensor=true">
     </script>
     
@@ -40,13 +41,14 @@
 
 
           <div class="account settings row cards">
+            <?php echo validation_errors(); ?>
             <form class="settingfrom form-horizontal" method="POST" action="<?php echo base_url().'account/settings/'.$user_info['id'] ; ?>" enctype="multipart/form-data" role="form">
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Profile Image</label>
                 <div class="col-sm-10">
                   <div class="fileinput fileinput-new" data-provides="fileinput">
                     <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                      <img src="<?php echo base_url()."assets/img/male.png"?>" data-src="" alt="...">
+                      <img src="<?php echo  ($user_info['img_url'] != "") ? base_url().'pics/'.$user_info['img_url'] : base_url().'assets/img/male.png' ?>" data-src="" alt="...">
                     </div>
                     <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
                     <div>
@@ -79,28 +81,17 @@
                 <label for="inputEmail3" class="col-sm-2 control-label">Gender</label>
                 <div class="col-sm-10">
                   <label class="radio-inline">
-                    <input type="radio" name="gender" id="inlineCheckbox2" value="option2" checked> Male
+                    <input type="radio" name="gender" id="inlineCheckbox2" value="1" <?php echo ($user_info['gender'] == 1 )?'checked':'' ?> > Male
                   </label>
                   <label class="radio-inline">
-                    <input type="radio" name="gender" id="inlineCheckbox3" value="option3"> Female
-                  </label>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="inputEmail3" class="col-sm-2 control-label">Gender</label>
-                <div class="col-sm-10">
-                  <label class="radio-inline">
-                    <input type="radio" name="gender" id="inlineCheckbox2" value="option2" checked> Male
-                  </label>
-                  <label class="radio-inline">
-                    <input type="radio" name="gender" id="inlineCheckbox3" value="option3"> Female
+                    <input type="radio" name="gender" id="inlineCheckbox3" value="0" <?php echo ($user_info['gender'] == 0 )?'checked':'' ?> > Female
                   </label>
                 </div>
               </div>
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Date of birth</label>
                 <div class="col-sm-10">
-                  <input type="text" name="middlename" class="form-control" id="inputEmail3" placeholder="middlename" value="<?php echo $user_info['middlename']?>">
+                  <input type="text" name="dob" class="form-control" id="datepicker" placeholder="date of birth" value="<?php echo $user_info['dob']?>">
                 </div>
               </div>
               <div class="form-group">
@@ -113,8 +104,9 @@
                 <label for="inputEmail3" class="col-sm-2 control-label">Country</label>
                 <div class="col-sm-3">
                   <select name="country" class="form-control" id="select_counrty">
+                    <option value="">Select Country</option>
                     <?php foreach ($countries as $country) { ?>
-                        <option value="<?php echo $country['Code']; ?>"><?php echo $country['Name'] ; ?></option>
+                        <option code="<?php echo $country['Code']; ?>" value="<?php echo $country['Name']; ?>" <?php echo ($country['Name'] == $user_info['country'])?'selected':'' ?>><?php echo $country['Name'] ; ?></option>
                     <? }?>
                   </select>
                 </div>
@@ -123,7 +115,7 @@
                 <label for="inputEmail3" class="col-sm-2 control-label">City</label>
                 <div class="col-sm-3">
                   <select name="city" class="form-control" id="select_city">
-                    <option>Select city</option>
+                    <option value="<?php echo $user_info['city']; ?>"><?php echo $user_info['city']; ?></option>
                   </select>
                 </div>
               </div>
@@ -141,26 +133,27 @@
 
 
           <div class="changepass settings row cards">
-            <form class="settingfrom form-horizontal" role="form">
+            <form class="settingfrom form-horizontal" method="POST" action="<?php echo base_url().'account/password_change/'.$user_info['id'] ; ?>" role="form">
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Old Password</label>
                 <div class="col-sm-10">
-                  <input type="password" class="form-control" id="inputEmail3" placeholder="Email">
+                  <input type="password" name="old_pass" class="form-control" id="old_pass" placeholder="Old Password">
                 </div>
               </div>
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">New Password</label>
                 <div class="col-sm-10">
-                  <input type="password" class="form-control" id="inputEmail3" placeholder="Email">
+                  <input type="password" name="new_pass" class="form-control" id="new_pass" placeholder="password">
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Confirm Password</label>
                 <div class="col-sm-10">
-                  <input type="password" class="form-control" id="inputEmail3" placeholder="Email">
+                  <input type="password" name="confirm_pass" class="form-control" id="confirm_pass" placeholder="confirmpassword">
                 </div>
               </div>
+
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-success">Change</button>
@@ -219,6 +212,8 @@
     <script type="text/javascript">
     $(document).ready(function(){
       
+      $( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });
+
       hideall();
 
       $(".account").show();
@@ -235,7 +230,7 @@
       }
 
       $("#select_counrty").on("change",function(){
-        var code = $('#select_counrty :selected').val();
+        var code = $('#select_counrty :selected').attr('code');
         $.get("<?php echo base_url().'account/get_cities/';?>"+code,function(data){
           var cities = JSON.parse(data);
           var innerString = "";

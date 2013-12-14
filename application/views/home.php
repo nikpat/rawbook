@@ -20,6 +20,17 @@
         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
          var markers = [];
+
+        var users = <?php echo $users ; ?>;
+        console.log(users);
+
+        for (var i = 0; i < users.length ; i++) { 
+          markers.push(setMarker( map ,users[i])); 
+        }
+
+        
+
+        /*
         for (var i = 0; i < 100; i++) {
           var dataPhoto = data.photos[i];
           var latLng = new google.maps.LatLng(dataPhoto.latitude,
@@ -28,11 +39,59 @@
             position: latLng
           });
           markers.push(marker);
-        }
+        } */
+      
+        
+
         var markerCluster = new MarkerClusterer(map, markers);
       }
 
       google.maps.event.addDomListener(window, 'load', initialize);
+      prev_infowindow = false;
+
+      function setMarker(map, usrdata) {     
+        var p = usrdata;    
+        var latLng = new google.maps.LatLng(usrdata.lat,usrdata.lng);
+
+        var contentString =   '<div class="row cards" >'+
+                                '<div class="col-xs-12">'+
+                                   '<div class="row">'+
+                                      '<div class="col-xs-5"><img src="<?php echo base_url() ; ?>assets/img/male.png" style="width:100px" /></div>'+
+                                      '<div class="col-xs-7">'+
+                                        '<div class="row">'+
+                                          '<div class="usrname"><a href = "<?php echo base_url()?>'+'account?id='+usrdata.id+'">'+usrdata.firstname+' '+usrdata.lastname+'</a></div>'+
+                                          '<div class="usrtype">'+usrdata.role+'</div>'+
+                                        '</div>'+
+                                      '</div>'+
+                                    '</div>'+
+                                   '<div class="row"><div class="col-xs-12"><a class=" col-xs-6 btn btn-warning msg_user" href="#data" alt="" uname='+usrdata.username+'>Message</a></div></div>'+
+                                '</div>'+
+                              '</div>';
+
+        var marker = new google.maps.Marker({
+            position: latLng,
+            map: map,
+            html: contentString
+        });
+        
+        var infowindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+
+      
+        google.maps.event.addListener(marker, "click", function () {
+            if (prev_infowindow) {
+                prev_infowindow.close();
+            }
+            infowindow.setContent(this.html);
+            infowindow.open(map, this);
+            prev_infowindow = infowindow;
+        });
+
+        return marker;
+      }
+
+
     </script>
 
     <div class="container">

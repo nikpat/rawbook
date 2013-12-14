@@ -43,14 +43,51 @@ class Account extends CI_Controller {
 	{
 		$this->load->model('core_model','core');
 		$data['main_pg'] = "account";
+		$user_id =  $this->session->userdata('userId');
+
 		if($this->session->userdata('isLogged') == 1){
 			if($_POST){
-				$this->account->edit_profile($_POST,$_FILES);
+				$config = array(
+				               array(
+				                     'field'   => 'firstname', 
+				                     'label'   => 'First name', 
+				                     'rules'   => 'required'
+				                  ),
+				               array(
+				                     'field'   => 'lastname', 
+				                     'label'   => 'Last name', 
+				                     'rules'   => 'required'
+				                  ),
+				                array(
+				                     'field'   => 'email', 
+				                     'label'   => 'Email', 
+				                     'rules'   => 'required'
+				                  ),
+				                array(
+				                     'field'   => 'country', 
+				                     'label'   => 'Country', 
+				                     'rules'   => 'required'
+				                  ),
+				               	array(
+				                     'field'   => 'city', 
+				                     'label'   => 'City', 
+				                     'rules'   => 'required'
+				                  ),
+
+				            );
+
+				$this->form_validation->set_rules($config);
+
+
+				if ($this->form_validation->run() != FALSE)
+				{
+					$this->account->edit_profile($user_id,$_POST,$_FILES);
+				}
+				
 			}
 
 			
 			$data['countries'] = $this->core->get_countries();
-
 			$data['user_info'] = $this->account->get_user($id); 
 			$this->load->view('header',$data);
 			$this->load->view('account/settings');
@@ -59,6 +96,52 @@ class Account extends CI_Controller {
 		else{
 			redirect('home');	
 		}
+	}
+
+	public function password_change($id){
+		$data['main_pg'] = "account";
+		$this->load->model('core_model','core');
+		$user_id =  $this->session->userdata('userId');
+		
+		$config = array(
+		               array(
+		                     'field'   => 'old_pass', 
+		                     'label'   => 'Old Password', 
+		                     'rules'   => 'required'
+		                  ),
+		               array(
+		                     'field'   => 'new_pass', 
+		                     'label'   => 'New Password', 
+		                     'rules'   => 'required'
+		                  ),
+		                array(
+		                     'field'   => 'confirm_pass', 
+		                     'label'   => 'Confirm Password', 
+		                     'rules'   => 'required|matches[new_pass]'
+		                  ),
+		            );
+
+		$this->form_validation->set_rules($config);
+
+		if ($this->form_validation->run() != FALSE)
+		{
+			if($this->account->change_password($user_id,$_POST)){
+				$this->session->set_flashdata('success','Password Changed');
+				redirect('/account/settings/'.$user_id);
+			}
+			else{
+				$this->session->set_flashdata('error','Password is not changed please try again');
+				redirect('/account/settings/'.$user_id);
+			};
+		}
+		else{
+			$data['countries'] = $this->core->get_countries();
+			$data['user_info'] = $this->account->get_user($id); 
+			$this->load->view('header',$data);
+			$this->load->view('account/settings');
+			$this->load->view('footer');
+		}
+		
 	}
 
 

@@ -38,8 +38,7 @@
                           <?php echo !empty($user["lastname"]) ? $user["lastname"]:"" ; ?>  
                       </div>
                       <div class="usrtype">Buyer</div>
-                      <div class="userrole">CEO at Infiny</div>
-                      <div class="userplace">Mumbai<?php echo !empty($user["city"]) ? $user["city"]:"" ; ?>,India <?php echo !empty($user["county"]) ? $user["county"]:"" ; ?></div>
+                      <div class="userplace"><?php echo !empty($user["city"]) ? $user["city"]:"" ; ?>,India <?php echo !empty($user["county"]) ? $user["county"]:"" ; ?></div>
                     </div>
                   </div>
                 </div>

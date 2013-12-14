@@ -18,9 +18,6 @@ class Core_model extends CI_Model {
         $checkUsername = count($this->db->get_where('user',array('username' => $data['username']))->result_array());
         $checkEmail = count($this->db->get_where('user',array('email' => $data['email']))->result_array());
 
-        print($data);
-        exit;
-
         $data = array(
            'email'      => $data['email'] ,
            'username'   => $data['username'] ,
