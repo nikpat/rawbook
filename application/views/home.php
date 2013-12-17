@@ -1,9 +1,29 @@
 
     <style type="text/css">
+    #map-canvas {
+        height: 100%;
+        position: fixed !important;
+        top: 0;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        z-index: 0;
+      }
+
+    .container {
+      z-index: 100;
+      position: relative;
+    }
+
+      /*    
       #map-canvas { 
         box-shadow: 5px 7px 5px #888888;
         margin-top: 25px;
-        height: 100% }
+        height: 100% } */
+
+        .gm-style-iw div{
+          overflow: hidden !important ;
+        }
     </style>
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQyK6vL5GbHnP4r1RcQ6xQWjt82MnXZgI&sensor=true">
@@ -15,7 +35,9 @@
         var myLatlng = new google.maps.LatLng(43, 12);
         var mapOptions = {
           zoom: 2,
-          center: myLatlng
+          center: myLatlng,
+          minZoom: 2, 
+          maxZoom: 9 
         }
         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
@@ -27,44 +49,36 @@
         for (var i = 0; i < users.length ; i++) { 
           markers.push(setMarker( map ,users[i])); 
         }
-
-        
-
-        /*
-        for (var i = 0; i < 100; i++) {
-          var dataPhoto = data.photos[i];
-          var latLng = new google.maps.LatLng(dataPhoto.latitude,
-              dataPhoto.longitude);
-          var marker = new google.maps.Marker({
-            position: latLng
-          });
-          markers.push(marker);
-        } */
       
-        
-
         var markerCluster = new MarkerClusterer(map, markers);
       }
 
       google.maps.event.addDomListener(window, 'load', initialize);
+     
       prev_infowindow = false;
-
       function setMarker(map, usrdata) {     
         var p = usrdata;    
         var latLng = new google.maps.LatLng(usrdata.lat,usrdata.lng);
-
-        var contentString =   '<div class="row cards" >'+
+         var img_url = ""
+        if(usrdata.img_url != "" ) { img_url = '<?php echo base_url()."pics/";?>'+usrdata.img_url ; } else { img_url = '<?php echo base_url()."assets/img/male.png";?>'; }
+        var interest = "";
+        if(usrdata.interest != null ){
+             interest = '<div class="usrint">'+usrdata.interest+'</div>';                      
+        }
+        var contentString =   '<div class="row cards" style="width:250px;" >'+
                                 '<div class="col-xs-12">'+
                                    '<div class="row">'+
-                                      '<div class="col-xs-5"><img src="<?php echo base_url() ; ?>assets/img/male.png" style="width:100px" /></div>'+
+                                      '<div class="col-xs-5"><img src="'+ img_url +'" style="width:100px" /></div>'+
                                       '<div class="col-xs-7">'+
-                                        '<div class="row">'+
+                                        
                                           '<div class="usrname"><a href = "<?php echo base_url()?>'+'account?id='+usrdata.id+'">'+usrdata.firstname+' '+usrdata.lastname+'</a></div>'+
-                                          '<div class="usrtype">'+usrdata.role+'</div>'+
-                                        '</div>'+
+                                          '<div class="usrtype">'+usrdata.type+'</div>'+
+                                          interest
+                                          +
+                                          '<a class=" col-xs-12 btn btn-warning msg_user" href="#data"  alt="" uname='+usrdata.username+'>Message</a>'+
                                       '</div>'+
                                     '</div>'+
-                                   '<div class="row"><div class="col-xs-12"><a class=" col-xs-6 btn btn-warning msg_user" href="#data" alt="" uname='+usrdata.username+'>Message</a></div></div>'+
+                                   '<div class="row"></div>'+
                                 '</div>'+
                               '</div>';
 
@@ -92,9 +106,39 @@
       }
 
 
+
     </script>
 
     <div class="container">
+
+    <div style="display:none">
+        <div id="data">
+          <div style="width:800px" >
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" class="form-control" id="msgUname" placeholder="Username" required>
+              </div>
+              <div class="form-group">
+                <label for="article">Article</label>
+                <select class="form-control" name="msgArticle" id="msgArticle">
+                    <option value="groundnut" >groundnut</option>
+                    <option value="cashewnut">cashewnut</option>
+                    <option value="soya">soya</option>
+                    <option value="rice">rice</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="subject">Subject</label>
+                <input name="subject" type="text" class="form-control" id="msgSubject" placeholder="Subject">
+              </div>
+              <div class="form-group">
+                <label for="message">Message</label>
+                <textarea name="message" type="text" class="form-control" id="msgContent" placeholder="Message"></textarea>
+              </div>
+              <button id="msgSend" class="btn btn-default btn-success">Send</button>
+          </div><!--/span-->
+        </div>
+    </div>
 
       <div class="row row-offcanvas row-offcanvas-right">
 
@@ -132,7 +176,7 @@
           </div>
         </div>
 
-        <div class="col-sm-9">
+        <!-- div class="col-sm-9">
             <div style="height:570px;">
               <ul class="nav nav-pills">
                 <li class="active"><a href="#">Map View</a></li>
@@ -141,22 +185,60 @@
               </ul>
               <div id="map-canvas"/>
             </div>
-        </div><!--/span-->
+        </div -->
 
         
       </div><!--/row-->
+     
+    </div><!--/.container-->
 
-      <hr>
+    <div id="map-canvas"/>
 
-      <footer>
-        <p>&copy; Snoogle Company 2013</p>
-      </footer>
-      <script>
-        $(document).ready(function(e){
-            $(".category").on("click",function(){
+    <script>
+
+   
+
+$(document).ready(function(){ 
+  $(".category").on("click",function(){
               $(".category").removeClass('active');
               $(this).addClass('active');  
             });
-        });
-      </script>
-    </div><!--/.container-->
+
+  /*
+  $(".msg_user").on('click',function(){
+    alert("hello");
+  }); */
+
+  
+    $('.msg_user').fancybox({
+        scrolling   : 'hidden',
+        helpers     : {
+              overlay: {
+                locked: true 
+              }
+            },
+       afterShow : function(){
+        var currentDiv = this.element[0];
+        var msgUname = $(currentDiv).attr('uname');
+        $("#msgUname").val(msgUname);
+      }
+    });
+
+
+  $("#msgSend").on("click",function(){
+    $.fancybox.close() ;
+    var payload = {
+      username:$("#msgUname").val() ,article : $("#msgArticle").val() , subject : $("#msgSubject").val() , message : $("#msgContent").val() 
+    }
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url();?>messages/ajax_compose",
+      data: payload,
+      success: function(data){
+        console.log(data);
+      }
+      //dataType: 'JSON'
+    });
+  });
+});
+</script>

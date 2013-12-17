@@ -107,7 +107,7 @@
                     <option value="">Select Country</option>
                     <?php foreach ($countries as $country) { ?>
                         <option code="<?php echo $country['Code']; ?>" value="<?php echo $country['Name']; ?>" <?php echo ($country['Name'] == $user_info['country'])?'selected':'' ?>><?php echo $country['Name'] ; ?></option>
-                    <? }?>
+                    <?php }?>
                   </select>
                 </div>
               </div>

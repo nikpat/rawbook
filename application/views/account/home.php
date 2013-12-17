@@ -2,10 +2,7 @@
 
   <!-- Global CSS for the page and tiles -->
 
-  <link href="<?php echo base_url().'assets/css/main.css';?>" rel="stylesheet">
-  <!-- Add fancyBox -->
-  <link rel="stylesheet" href="<?php echo base_url().'assets/fancybox/jquery.fancybox.css?v=2.1.5' ?>" type="text/css" media="screen" />
-  <script type="text/javascript" src="<?php echo base_url().'assets/fancybox/jquery.fancybox.pack.js?v=2.1.5'?>"></script>
+
 
   <!-- link href="<?php echo base_url().'assets/css/reset.css';?>" rel="stylesheet" -->
   <style>

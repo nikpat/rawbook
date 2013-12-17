@@ -9,7 +9,45 @@ class Account_model extends CI_Model {
     }
 
     function get_users(){
-        return $this->db->get('user')->result_array(); 
+        $query = "  SELECT usr.* , grp.name type,a.interest FROM user usr 
+                    LEFT JOIN
+                    `group` grp
+                    ON
+                    usr.group_id=grp.id
+                    LEFT JOIN
+                        (   SELECT ui.user_id,GROUP_CONCAT(cat.title) as interest 
+                            FROM category cat 
+                            LEFT JOIN user_interest ui 
+                            ON ui.category_id = cat.id 
+                            GROUP BY ui.user_id
+                        ) as a
+                    ON 
+                    a.user_id = usr.id " ;
+
+        $userinfo = $this->db->query($query)->result_array() ; 
+        return $userinfo;
+    }
+
+
+    // find users with interest
+    function get_interest_users(){
+        $query = "  SELECT usr.* , grp.name type,a.interest FROM user usr 
+                    LEFT JOIN
+                    `group` grp
+                    ON
+                    usr.group_id=grp.id
+                    LEFT JOIN
+                        (   SELECT ui.user_id,GROUP_CONCAT(cat.title) as interest 
+                            FROM category cat 
+                            LEFT JOIN user_interest ui 
+                            ON ui.category_id = cat.id 
+                            GROUP BY ui.user_id
+                        ) as a
+                    ON 
+                    a.user_id = usr.id " ;
+
+        $userinfo = $this->db->query($query)->result_array() ; 
+        return $userinfo;
     }
     
     function get_user($id){

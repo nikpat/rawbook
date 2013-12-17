@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="../../assets/ico/favicon.png">
 
-    <title>Snoogle</title>
+    <title>fixsir</title>
 
     <!-- Bootstrap core CSS -->
     <link href="<?php echo base_url().'assets/css/bootstrap.css';?>" rel="stylesheet">
@@ -43,7 +44,7 @@
 
     </style>
   </head>
-
+    
   <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -82,7 +83,7 @@
       <div class="row" style="margin-top: 40px;">    
         <div class="col-md-6">
           <div class="panel panel-default">
-             This is reserved place for image
+            <img src="<?php echo base_url();?>assets/img/unity.jpg" style="margin: 45px;width: 460px;" />
           </div>
         </div>
         <div class="col-md-6">
@@ -112,15 +113,15 @@
                 </div>
                 <div class="form-group">
                   <label class=".radio-inline" >
-                  <input type="radio" name="userType" id="optionsRadios1" value="2" checked>
+                  <input class="userType" type="checkbox" name="userType" id="optionsRadios1" value="2" checked>
                     Buyer
                   </label>
                   <label class=".radio-inline">
-                  <input type="radio" name="userType" id="optionsRadios1" value="3" checked>
+                  <input class="userType" type="checkbox" name="userType" id="optionsRadios1" value="3" >
                     Seller
                   </label>
                   <label class=".radio-inline">
-                  <input type="radio" name="userType" id="optionsRadios1" value="agent" checked>
+                  <input class="userType" type="checkbox" name="userType" id="optionsRadios1" value="agent" >
                     Agent
                   </label>
                 </div>
@@ -142,7 +143,39 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src = "<?php echo base_url().'assets/js/bootstrap.js';?>"></script>
+    <script>
+      $('.userType').on('click',function(){
+        
+        if( $(this).is(':checked') ){
+          $('#myModal').modal('show'); 
+        } 
+        
+
+      });
+    </script>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">What do you like to buy ?</h4>
+          </div>
+          <div class="modal-body">
+            this is nice allll 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Done</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
   </body>
 </html>

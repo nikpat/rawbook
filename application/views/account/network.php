@@ -92,7 +92,7 @@
             { ?>
             <a class=" col-xs-6 btn btn-success connectionReq" uid="<?php echo $value['id'] ;?>" id="follow" >Follow</a>  
           <?php } ?>
-          <a class=" col-xs-6 btn btn-warning msg_user" alt="<?php echo $value['id'] ;?>" uname="<?php echo $value['username']?>">Message</a>
+          <a class=" col-xs-6 btn btn-warning msg_user" href="#data" alt="<?php echo $value['id'] ;?>" uname="<?php echo $value['username']?>">Message</a>
         </div>
       </div>
     </div>

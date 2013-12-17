@@ -28,6 +28,10 @@
     <script src = "<?php echo base_url().'assets/js/holders.js';?>"></script>
     <script src = "<?php echo base_url().'assets/js/jquery.wookmark.js';?>"></script>
     <script src = "<?php echo base_url().'assets/js/jquery.imagesloaded.js';?>"></script>
+    <link href="<?php echo base_url().'assets/css/main.css';?>" rel="stylesheet">
+    <!-- Add fancyBox -->
+    <link rel="stylesheet" href="<?php echo base_url().'assets/fancybox/jquery.fancybox.css?v=2.1.5' ?>" type="text/css" media="screen" />
+    <script type="text/javascript" src="<?php echo base_url().'assets/fancybox/jquery.fancybox.pack.js?v=2.1.5'?>"></script>
     <!--[if lt IE 9]><script src="../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
