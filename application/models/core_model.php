@@ -63,4 +63,9 @@ class Core_model extends CI_Model {
         return $this->db->get_where('city',array("CountryCode"=>$code))->result_array();
     }
 
+    function get_categories(){
+        $query = "SELECT * FROM category ORDER BY 'parent_id'";
+        return $this->db->query($query)->result_array();
+    }
+
 }

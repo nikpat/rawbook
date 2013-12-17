@@ -10,6 +10,7 @@ class Home extends CI_Controller {
 
 	public function index()
 	{
+
 		$data['main_pg'] = "home";
 		if($this->session->userdata('isLogged') == 1){
 			$data['users'] = json_encode($this->account->get_users());
@@ -18,14 +19,16 @@ class Home extends CI_Controller {
 			$this->load->view('footer');
 		}
 		else{
-			$this->load->view('login');	
+			$this->load->model('core_model','core');
+			$data['categories'] = $this->core->get_categories();
+			$this->load->view('login',$data);	
 		}
 	}
 
 	public function login(){
 
 		$this->load->model('core_model','core');
-
+		
 		$config = array(
                array(
                      'field'   => 'usernameEmail', 

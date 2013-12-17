@@ -113,15 +113,15 @@
                 </div>
                 <div class="form-group">
                   <label class=".radio-inline" >
-                  <input class="userType" type="checkbox" name="userType" id="optionsRadios1" value="2" checked>
+                  <input class="userType" type="checkbox" name="userType" alt="buy" id="optionsRadios1" value="2" checked>
                     Buyer
                   </label>
                   <label class=".radio-inline">
-                  <input class="userType" type="checkbox" name="userType" id="optionsRadios1" value="3" >
+                  <input class="userType" type="checkbox" name="userType" alt="sell" id="optionsRadios1" value="3" >
                     Seller
                   </label>
                   <label class=".radio-inline">
-                  <input class="userType" type="checkbox" name="userType" id="optionsRadios1" value="agent" >
+                  <input class="userType" type="checkbox" name="userType" alt="deal in" id="optionsRadios1" value="agent" >
                     Agent
                   </label>
                 </div>
@@ -148,6 +148,8 @@
     <script>
       $('.userType').on('click',function(){
         
+        var purpose = $(this).attr('alt');
+        $('#purpose').html(purpose);
         if( $(this).is(':checked') ){
           $('#myModal').modal('show'); 
         } 
@@ -163,10 +165,13 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="myModalLabel">What do you like to buy ?</h4>
+            <h4 class="modal-title" id="myModalLabel">What do you like to <span id="purpose"> buy </span> ?</h4>
           </div>
           <div class="modal-body">
-            this is nice allll 
+            <?foreach ($categories as $cat) { if( $cat['parent_id'] == 0 ){ echo $cat['title'] ;} ;?>
+            
+            <? } ?>
+           
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
