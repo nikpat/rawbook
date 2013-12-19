@@ -31,7 +31,7 @@
       font-size: 60px;
       color: white;
       /*font-family: 'Lily Script One', cursive; */
-      font-family: 'Bubblegum Sans', cursive;
+      /* font-family: 'Bubblegum Sans', cursive; */
     }
    body {
     padding-top: 50px;
@@ -113,21 +113,24 @@
                 </div>
                 <div class="form-group">
                   <label class=".radio-inline" >
-                  <input class="userType" type="checkbox" name="userType" alt="buy" id="optionsRadios1" value="2" checked>
+                  <input class="userType" type="checkbox" name="userType" alt="buy" id="optionsRadios1" value="2"  />
+                  <input type="hidden" id="buy_items" name="buy_items" value=""/>
                     Buyer
                   </label>
                   <label class=".radio-inline">
-                  <input class="userType" type="checkbox" name="userType" alt="sell" id="optionsRadios1" value="3" >
+                  <input class="userType" type="checkbox" name="userType" alt="sell" id="optionsRadios1" value="3" />
+                  <input type="hidden" id="sell_items" name="sell_items" value=""/>
                     Seller
                   </label>
                   <label class=".radio-inline">
-                  <input class="userType" type="checkbox" name="userType" alt="deal in" id="optionsRadios1" value="agent" >
+                  <input class="userType" type="checkbox" name="userType" alt="trade" id="optionsRadios1" value="agent"  />
+                  <input type="hidden" id="trade_items" name="trade_items"  value=""/>
                     Agent
                   </label>
                 </div>
                 
                 <!--input type="range" class="slideToUnlock" value="0" max="100" -->
-                <button type="submit" class="btn btn-default btn-primary">Signup</button>
+                <button type="submit" class="btn btn-default btn-primary" onclick="checkForm()">Signup</button>
               </form>
             </div>
           </div>
@@ -138,49 +141,162 @@
 
     </div> <!-- /container -->
 
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src = "<?php echo base_url().'assets/js/bootstrap.js';?>"></script>
-    <script>
-      $('.userType').on('click',function(){
-        
-        var purpose = $(this).attr('alt');
-        $('#purpose').html(purpose);
-        if( $(this).is(':checked') ){
-          $('#myModal').modal('show'); 
-        } 
-        
-
-      });
-    </script>
-
-
     <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  
+
+       <!-- Modal -->
+    <div class="modal fade" id="buyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="myModalLabel">What do you like to <span id="purpose"> buy </span> ?</h4>
+            <h4 class="modal-title" id="myModalLabel">What do you like to buy ?</h4>
           </div>
           <div class="modal-body">
-            <?foreach ($categories as $cat) { if( $cat['parent_id'] == 0 ){ echo $cat['title'] ;} ;?>
-            
+            <?php foreach ($categories as $cat) { if( $cat['parent_id'] == 0 ){ echo '<h3>'.$cat['title'].'</h3>';} ?>
+              <?php foreach ($categories as $subcat) { 
+                if( $subcat['parent_id'] != 0 && $subcat['parent_id'] == $cat['id']){ 
+                  echo "<input type='checkbox' class='buy_cat' value='".$subcat['id']."'' />  ".$subcat['title']. " | " ;
+                } 
+              } ?> 
             <? } ?>
            
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Done</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+       <!-- Modal -->
+    <div class="modal fade" id="sellModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">What do you like to sell ?</h4>
+          </div>
+          <div class="modal-body">
+            <?php foreach ($categories as $cat) { if( $cat['parent_id'] == 0 ){ echo '<h3>'.$cat['title'].'</h3>';} ?>
+              <?php foreach ($categories as $subcat) { 
+                if( $subcat['parent_id'] != 0 && $subcat['parent_id'] == $cat['id']){ 
+                  echo "<input type='checkbox' class='sell_cat' value='".$subcat['id']."'' />  ".$subcat['title']. " | " ;
+                } 
+              } ?> 
+            <? } ?>
+           
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+           <!-- Modal -->
+    <div class="modal fade" id="dealinModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">What do you like to deal in ?</h4>
+          </div>
+          <div class="modal-body">
+            <?php foreach ($categories as $cat) { if( $cat['parent_id'] == 0 ){ echo '<h3>'.$cat['title'].'</h3>';} ?>
+              <?php foreach ($categories as $subcat) { 
+                if( $subcat['parent_id'] != 0 && $subcat['parent_id'] == $cat['id']){ 
+                  echo "<input type='checkbox' class='trade_cat' value='".$subcat['id']."'' />  ".$subcat['title']. " | " ;
+                } 
+              } ?> 
+            <? } ?>
+           
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
 
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src = "<?php echo base_url().'assets/js/jquery.js';?>"></script>
+    <script src = "<?php echo base_url().'assets/js/bootstrap.js';?>"></script>
+    <script>
+      var checkedCount = 1;
+      $('.userType').on('click',function(){
+        console.log('checkedCount'+checkedCount)
+        
+      
+          var purpose = $(this).attr('alt');
+          $('#purpose').html(purpose);
+          if( $(this).is(':checked') ){
+            if(checkedCount > 2){
+              $(this).prop('checked', false);
+              alert("You can select only 2 !");
+            }
+            else{
+
+              if(purpose=="buy"){
+                $('#'+purpose+'Modal').modal('show'); 
+              }
+              else if(purpose=="sell"){
+                $('#'+purpose+'Modal').modal('show'); 
+              }
+              else{
+                $('#'+purpose+'Modal').modal('show'); 
+              }
+              
+              checkedCount++;
+            }
+            
+          } 
+          else{
+             checkedCount--;
+          }
+        
+      });
+
+      function checkForm(){
+        //form validation ehre
+      }
+
+      // for buy
+      var buy_cat_ids = [] ;
+      $(".buy_cat").on('click',function(){
+         select_cat($(this),trade_cat_ids,"#buy_items");
+      });
+
+      // for sell
+      var sell_cat_ids = [] ;
+      $(".sell_cat").on('click',function(){
+        select_cat($(this),sell_cat_ids,"#sell_items");
+      });
+
+      // for trade
+      var trade_cat_ids = [] ;
+      $(".trade_cat").on('click',function(){
+        select_cat($(this),trade_cat_ids,"#trade_items");
+      });
+
+
+      function select_cat(that,cat_array,insert_into){
+        var cat_id = that.val() ;
+        if(that.is(':checked')){
+          // add to array
+          cat_array.push(cat_id);
+        }
+        else{
+          //remove from array
+          cat_array.splice(cat_array.indexOf(cat_id),1);
+        }
+        console.log(cat_array);
+        $(insert_into).val(cat_array.join(','));
+      }
+
+    </script>
   </body>
 </html>

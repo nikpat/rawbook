@@ -15,6 +15,28 @@ class Core_model extends CI_Model {
 
     function registerUser($data){
         print_r($data);
+        $buy_items_str = $data['buy_items'];
+        $sell_items_str = $data['sell_items'];
+        $trade_items_str = $data['trade_items'];
+        $buy_items = array();
+        $sell_items = array();
+        $trade_items = array();
+
+        if(strlen($buy_items_str)>1){
+            $buy_items = explode(',',$buy_items_str);
+        }
+        if(strlen($sell_items_str)>1){
+            $sell_items = explode(',',$sell_items_str);
+        }
+        if(strlen($trade_items_str)>1){
+            $trade_items = explode(',',$trade_items_str);
+        }
+        
+
+        echo count($buy_items);
+        echo count($sell_items);
+        echo count($trade_items);
+        exit;
         $checkUsername = count($this->db->get_where('user',array('username' => $data['username']))->result_array());
         $checkEmail = count($this->db->get_where('user',array('email' => $data['email']))->result_array());
 
